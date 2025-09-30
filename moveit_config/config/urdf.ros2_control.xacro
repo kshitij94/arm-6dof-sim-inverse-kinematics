@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="urdf_ros2_control" params="name initial_positions_file">
+        <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+
+        <ros2_control name="${name}" type="system">
+            <hardware>
+                <!-- By default, set up controllers for simulation. This won't work on real hardware -->
+                <plugin>mock_components/GenericSystem</plugin>
+            </hardware>
+            <joint name="base-l1">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['base-l1']}</param>
+                </state_interface>
+            </joint>
+            <joint name="l1-l2">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['l1-l2']}</param>
+                </state_interface>
+            </joint>
+            <joint name="l2-l3">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['l2-l3']}</param>
+                </state_interface>
+            </joint>
+            <joint name="l3-l4">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['l3-l4']}</param>
+                </state_interface>
+            </joint>
+            <joint name="l4-l5">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['l4-l5']}</param>
+                </state_interface>
+            </joint>
+            <joint name="l5-l6">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['l5-l6']}</param>
+                </state_interface>
+            </joint>
+
+        </ros2_control>
+    </xacro:macro>
+</robot>
