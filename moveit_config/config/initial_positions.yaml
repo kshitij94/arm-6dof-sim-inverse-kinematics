@@ -1,4 +1,4 @@
-# Default initial positions for urdf's ros2_control fake system
+# Default initial positions for arm's ros2_control fake system
 
 initial_positions:
   base-l1: 0
@@ -7,3 +7,4 @@ initial_positions:
   l3-l4: 0
   l4-l5: 0
   l5-l6: 0
+  l6-hand: 0

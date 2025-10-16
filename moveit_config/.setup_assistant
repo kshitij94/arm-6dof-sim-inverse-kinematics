@@ -1,23 +1,10 @@
 moveit_setup_assistant_config:
   urdf:
-    package: urdf_sim_6dof
-    relative_path: urdf/urdf.urdf
+    package: arm
+    relative_path: urdf/arm.urdf
   srdf:
-    relative_path: config/urdf.srdf
+    relative_path: config/arm.srdf
   package_settings:
-    author_name: kp
-    author_email: pancholikshitij94@gmail.com
-    generated_timestamp: 1759204438
-  control_xacro:
-    command:
-      - position
-    state:
-      - position
-  modified_urdf:
-    xacros:
-      - control_xacro
-  control_xacro:
-    command:
-      - position
-    state:
-      - position
+    author_name: ""
+    author_email: ""
+    generated_timestamp: 1760510236

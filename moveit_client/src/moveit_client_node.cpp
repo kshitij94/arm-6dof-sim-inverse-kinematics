@@ -24,6 +24,9 @@ int main(int argc, char *argv[])
 
   // Create a ROS logger
   auto const logger = rclcpp::get_logger("moveit_client");
+
+  // Parameters are automatically declared from the launch file
+
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription;
 
   joint_state_subscription = node->create_subscription<sensor_msgs::msg::JointState>("joint_states", 10, &topic_callback);
@@ -39,37 +42,27 @@ int main(int argc, char *argv[])
   RCLCPP_INFO(logger, "Waiting for MoveGroupInterface to receive current state...");
   move_group_interface.setStartStateToCurrentState();
 
+  // Get and log the current pose
   geometry_msgs::msg::Pose current_pose = move_group_interface.getCurrentPose().pose;
-  RCLCPP_INFO(logger, "Current pose: x=%f, y=%f, z=%f, qx=%f, qy=%f, qz=%f, qw=%f",
+  RCLCPP_INFO(logger, "Current pose: x=%f, y=%f, z=%f, qw=%f, qx=%f, qy=%f, qz=%f",
               current_pose.position.x, current_pose.position.y, current_pose.position.z,
-              current_pose.orientation.x, current_pose.orientation.y, current_pose.orientation.z, current_pose.orientation.w);
+              current_pose.orientation.w, current_pose.orientation.x, current_pose.orientation.y, current_pose.orientation.z);
 
-  geometry_msgs::msg::Pose target_pose;
-  target_pose.position.x = 0.015758;
-  target_pose.position.y = 0.006706;
-  target_pose.position.z = 0.365018;
-  target_pose.orientation.x = 0.527242;
-  target_pose.orientation.y = 0.471197;
-  target_pose.orientation.z = -0.227045;
-  target_pose.orientation.w = 0.669657;
+  auto target_pose = current_pose;
 
-  RCLCPP_INFO(logger, "Target pose: x=%f, y=%f, z=%f, qx=%f, qy=%f, qz=%f, qw=%f",
-              target_pose.position.x, target_pose.position.y, target_pose.position.z,
-              target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z, target_pose.orientation.w);
+  target_pose.position.x = -0.375;
+  target_pose.position.y = 0.157;
+  target_pose.position.z = 0.552;
 
   move_group_interface.setPoseTarget(target_pose);
 
-  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-  bool success = (move_group_interface.plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
-
-  if (success)
+  if (move_group_interface.move() == moveit::core::MoveItErrorCode::SUCCESS)
   {
-    RCLCPP_INFO(logger, "Planning successful! Executing plan to move to the target pose.");
-    move_group_interface.execute(my_plan);
+    RCLCPP_INFO(logger, "Execution successful");
   }
   else
   {
-    RCLCPP_ERROR(logger, "Planning failed to move to the target pose!");
+    RCLCPP_ERROR(logger, "Execution failed ");
   }
 
   rclcpp::shutdown();

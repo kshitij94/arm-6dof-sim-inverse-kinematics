@@ -1,13 +1,13 @@
 <package format="3">
-  <name>urdf_sim_6dof</name>
+  <name>arm</name>
   <version>1.1.0</version>
   <description>
-    <p>URDF Description package for urdf</p>
+    <p>URDF Description package for arm</p>
     <p>This package contains configuration data, 3D models and launch files
-for urdf robot</p>
+for arm robot</p>
   </description>
   <author>TODO</author>
-  <maintainer email="TODO@email.com" />
+  <maintainer email="pancholikshitij94@gmail.com">kp</maintainer>
   <license>BSD</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>roslaunch</depend>

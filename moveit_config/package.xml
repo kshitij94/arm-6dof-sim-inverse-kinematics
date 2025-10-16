@@ -4,9 +4,9 @@
   <name>moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the urdf with the MoveIt Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using the arm with the MoveIt Motion Planning Framework
   </description>
-  <maintainer email="pancholikshitij94@gmail.com">kp</maintainer>
+  <maintainer email="kp@gmail.com"></maintainer>
 
   <license>BSD-3-Clause</license>
 
@@ -14,13 +14,12 @@
   <url type="bugtracker">https://github.com/moveit/moveit2/issues</url>
   <url type="repository">https://github.com/moveit/moveit2</url>
 
-  <author email="pancholikshitij94@gmail.com">kp</author>
+  <author email="kp@gmail.com"></author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>moveit_ros_move_group</exec_depend>
   <exec_depend>moveit_kinematics</exec_depend>
-  <exec_depend>kdl_kinematics_plugin</exec_depend>
   <exec_depend>moveit_planners</exec_depend>
   <exec_depend>moveit_simple_controller_manager</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
@@ -31,6 +30,7 @@
        We don't include them by default to prevent installing gazebo and all its dependencies. -->
   <!-- <exec_depend>joint_trajectory_controller</exec_depend> -->
   <!-- <exec_depend>gazebo_ros_control</exec_depend> -->
+  <exec_depend>arm</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>moveit_configs_utils</exec_depend>
   <exec_depend>moveit_ros_move_group</exec_depend>
@@ -42,9 +42,7 @@
   <exec_depend>rviz_common</exec_depend>
   <exec_depend>rviz_default_plugins</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
-  <exec_depend>urdf_sim_6dof</exec_depend>
   <exec_depend>warehouse_ros_mongo</exec_depend>
-  <exec_depend>xacro</exec_depend>
 
 
   <export>
