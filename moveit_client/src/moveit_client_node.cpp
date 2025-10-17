@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   // The user wants to move the hand along its x-axis.
   // 1. Define a transform representing a 5cm translation along the x-axis.
   tf2::Transform transform_in_hand_frame;
-  transform_in_hand_frame.setOrigin(tf2::Vector3(0.0, -0.02, 0.0));
+  transform_in_hand_frame.setOrigin(tf2::Vector3(-0.1, 0.0, 0.0));
   transform_in_hand_frame.setRotation(tf2::Quaternion(0.0, 0.0, 0.0, 1.0));
 
   // 2. Convert the current pose to a tf2 transform.
