@@ -5,15 +5,8 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <thread>
-
-// Global variable to store the last received joint state message
-sensor_msgs::msg::JointState::SharedPtr last_joint_state_msg;
-
-void topic_callback(const sensor_msgs::msg::JointState::SharedPtr msg)
-{
-  last_joint_state_msg = msg;
-}
-
+#include "tf2/LinearMath/Transform.hpp"
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 int main(int argc, char *argv[])
 {
   // Initialize ROS and create the Node
@@ -24,12 +17,6 @@ int main(int argc, char *argv[])
 
   // Create a ROS logger
   auto const logger = rclcpp::get_logger("moveit_client");
-
-  // Parameters are automatically declared from the launch file
-
-  rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription;
-
-  joint_state_subscription = node->create_subscription<sensor_msgs::msg::JointState>("joint_states", 10, &topic_callback);
 
   std::thread spin_thread([node]()
                           { rclcpp::spin(node); });
@@ -48,21 +35,49 @@ int main(int argc, char *argv[])
               current_pose.position.x, current_pose.position.y, current_pose.position.z,
               current_pose.orientation.w, current_pose.orientation.x, current_pose.orientation.y, current_pose.orientation.z);
 
-  auto target_pose = current_pose;
+  // The user wants to move the hand along its x-axis.
+  // 1. Define a transform representing a 5cm translation along the x-axis.
+  tf2::Transform transform_in_hand_frame;
+  transform_in_hand_frame.setOrigin(tf2::Vector3(0.0, -0.02, 0.0));
+  transform_in_hand_frame.setRotation(tf2::Quaternion(0.0, 0.0, 0.0, 1.0));
 
-  target_pose.position.x = -0.375;
-  target_pose.position.y = 0.157;
-  target_pose.position.z = 0.552;
+  // 2. Convert the current pose to a tf2 transform.
+  tf2::Transform current_pose_tf;
+  tf2::fromMsg(current_pose, current_pose_tf);
+
+  // 3. Compute the target pose by composing the current pose with the desired translation.
+  // The order of multiplication is important. Post-multiplication applies the transform in the local frame.
+  tf2::Transform target_pose_tf = current_pose_tf * transform_in_hand_frame;
+
+  // 4. Convert the result back to a ROS message.
+  geometry_msgs::msg::Pose target_pose;
+  tf2::toMsg(target_pose_tf.getOrigin(), target_pose.position);
+  target_pose.orientation = tf2::toMsg(target_pose_tf.getRotation());
+
+  RCLCPP_INFO(logger, "New target pose: x=%f, y=%f, z=%f, qw=%f, qx=%f, qy=%f, qz=%f",
+              target_pose.position.x, target_pose.position.y, target_pose.position.z,
+              target_pose.orientation.w, target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z);
 
   move_group_interface.setPoseTarget(target_pose);
 
-  if (move_group_interface.move() == moveit::core::MoveItErrorCode::SUCCESS)
+  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+  bool success = (move_group_interface.plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+
+  if (success)
   {
-    RCLCPP_INFO(logger, "Execution successful");
+    RCLCPP_INFO(logger, "Planning successful, executing the plan.");
+    if (move_group_interface.execute(my_plan) == moveit::core::MoveItErrorCode::SUCCESS)
+    {
+      RCLCPP_INFO(logger, "Execution successful");
+    }
+    else
+    {
+      RCLCPP_ERROR(logger, "Execution failed");
+    }
   }
   else
   {
-    RCLCPP_ERROR(logger, "Execution failed ");
+    RCLCPP_ERROR(logger, "Planning failed!");
   }
 
   rclcpp::shutdown();

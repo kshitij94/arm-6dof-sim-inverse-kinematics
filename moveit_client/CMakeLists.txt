@@ -11,6 +11,8 @@ find_package(rclcpp REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 add_executable(moveit_client_node src/moveit_client_node.cpp)
 target_include_directories(moveit_client_node PUBLIC
@@ -23,6 +25,9 @@ ament_target_dependencies(
   "moveit_ros_planning_interface"
   "geometry_msgs"
   "sensor_msgs"
+  "tf2_geometry_msgs"
+  "tf2"
+  "tf2_ros"
 )
 
 install(TARGETS moveit_client_node

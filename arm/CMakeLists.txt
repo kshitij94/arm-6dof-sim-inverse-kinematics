@@ -7,7 +7,7 @@ find_package(ament_cmake REQUIRED)
 ament_package()
 
 
-foreach(dir config launch meshes urdf)
+foreach(dir config meshes urdf)
 	install(DIRECTORY ${dir}/
 		DESTINATION share/arm/${dir})
 endforeach(dir)
